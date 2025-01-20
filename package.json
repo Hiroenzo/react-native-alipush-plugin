@@ -144,6 +144,11 @@
     "trailingComma": "es5",
     "useTabs": false
   },
+  "codegenConfig": {
+    "name": "RNAliyunReactNativePushSpec",
+    "type": "modules",
+    "jsSrcsDir": "src"
+  },
   "react-native-builder-bob": {
     "source": "src",
     "output": "lib",
