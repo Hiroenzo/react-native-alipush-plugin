@@ -1,5 +1,5 @@
 {
-  "name": "aliyun-react-native-push",
+  "name": "react-native-alipush",
   "version": "0.9.0",
   "description": "test",
   "main": "lib/commonjs/index",
@@ -39,15 +39,17 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "alicloud",
+    "push"
   ],
-  "repository": "https://github.com/aliyun/alibabacloud-push-reactnative-plugin",
-  "author": "aliyun",
+  "repository": "https://github.com/hiroenzo/react-native-alipush",
+  "author": "Hiroenzo",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/aliyun/alibabacloud-push-reactnative-plugin/issues"
+    "url": "https://github.com/hiroenzo/react-native-alipush/issues"
   },
-  "homepage": "https://github.com/aliyun/alibabacloud-push-reactnative-plugin#readme",
+  "homepage": "https://github.com/hiroenzo/react-native-alipush#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"
@@ -84,7 +86,6 @@
   "engines": {
     "node": ">= 16.0.0"
   },
-  "packageManager": "^yarn@1.22.15",
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [

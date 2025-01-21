@@ -11,7 +11,7 @@ import {
     ScrollView,
 } from 'react-native';
 
-import * as AliyunPush from 'aliyun-react-native-push';
+import * as AliyunPush from 'react-native-alipush';
 
 const CommonPage = () => {
     const [account, setAccount] = React.useState('');

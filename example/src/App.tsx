@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Platform, Text } from 'react-native';
 
 import { StyleSheet, SafeAreaView, View, Button, Alert } from 'react-native';
-import * as AliyunPush from 'aliyun-react-native-push';
+import * as AliyunPush from 'react-native-alipush';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -82,13 +82,18 @@ const HomeScreen = ({ navigation }) => {
 
   const closeCCPChannel = () => {
     AliyunPush.closeIOSCCPChannel();
-  }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
-      {Platform.OS === 'ios' && <View style={styles.list}>
-        <Button title="关闭iOS消息通道(必须在初始化之前调用)" onPress={closeCCPChannel} />
-      </View>}
+      {Platform.OS === 'ios' && (
+        <View style={styles.list}>
+          <Button
+            title="关闭iOS消息通道(必须在初始化之前调用)"
+            onPress={closeCCPChannel}
+          />
+        </View>
+      )}
       <View style={styles.list}>
         <Button title="初始化AliyunPush" onPress={initAliyunPush} />
       </View>
