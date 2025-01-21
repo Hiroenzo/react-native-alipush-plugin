@@ -1,11 +1,6 @@
 /* eslint-disable prettier/prettier */
-import {
-  NativeModules,
-  Platform,
-  DeviceEventEmitter,
-  NativeEventEmitter,
-  EmitterSubscription,
-} from 'react-native';
+import { DeviceEventEmitter, EmitterSubscription, Platform } from 'react-native';
+import Module, {ModuleEventEmitter} from './module';
 
 export const kAliyunPushSuccessCode = '10000';
 
@@ -34,23 +29,6 @@ export const kAliyunPushLogLevelError = 0;
 export const kAliyunPushLogLevelInfo = 1;
 export const kAliyunPushLogLevelDebug = 2;
 
-const LINKING_ERROR =
-  `The package 'aliyun-react-native-push' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n';
-
-const AliyunPush = NativeModules.AliyunPush
-  ? NativeModules.AliyunPush
-  : new Proxy(
-    {},
-    {
-      get() {
-        throw new Error(LINKING_ERROR);
-      },
-    }
-  );
-
 export interface PushResult {
   code: string;
   errorMsg?: string;
@@ -62,10 +40,10 @@ export function initPush(
   appKey?: string,
   appSecret?: string
 ): Promise<PushResult> {
-  if (Platform.OS === 'ios') {
-    return AliyunPush.initPush(appKey, appSecret);
+  if (Platform.OS !== 'android') {
+    return Module.initPush(appKey, appSecret);
   } else {
-    return AliyunPush.initPush();
+    return Module.initPush();
   }
 }
 
@@ -81,11 +59,11 @@ export function closeIOSCCPChannel(): Promise<PushResult> {
     });
   }
 
-  return AliyunPush.closeCCPChannel();
+  return Module.closeCCPChannel();
 }
 
 export function initAndroidThirdPush(): Promise<PushResult> {
-  if (Platform.OS === 'ios') {
+  if (Platform.OS !== 'android') {
     let result = {
       code: kAliyunPushOnlyAndroid,
       errorMsg: 'Only Support Android',
@@ -94,15 +72,15 @@ export function initAndroidThirdPush(): Promise<PushResult> {
       resolve(result);
     });
   }
-  return AliyunPush.initThirdPush();
+  return Module.initThirdPush();
 }
 
 export function getDeviceId(): Promise<string> {
-  return AliyunPush.getDeviceId();
+  return Module.getDeviceId();
 }
 
 export function closeAndroidPushLog(): Promise<PushResult> {
-  if (Platform.OS === 'ios') {
+  if (Platform.OS !== 'android') {
     let result = {
       code: kAliyunPushOnlyAndroid,
       errorMsg: 'Only Support Android',
@@ -112,11 +90,11 @@ export function closeAndroidPushLog(): Promise<PushResult> {
     });
   }
 
-  return AliyunPush.closePushLog();
+  return Module.closePushLog();
 }
 
 export function setAndroidLogLevel(level: number): Promise<PushResult> {
-  if (Platform.OS === 'ios') {
+  if (Platform.OS !== 'android') {
     let result = {
       code: kAliyunPushOnlyAndroid,
       errorMsg: 'Only Support Android',
@@ -125,7 +103,7 @@ export function setAndroidLogLevel(level: number): Promise<PushResult> {
       resolve(result);
     });
   }
-  return AliyunPush.setLogLevel(level);
+  return Module.setLogLevel(level);
 }
 
 /* 通用方法 */
@@ -134,33 +112,33 @@ export function setAndroidLogLevel(level: number): Promise<PushResult> {
  * 绑定账户
  */
 export function bindAccount(account: string): Promise<PushResult> {
-  return AliyunPush.bindAccount(account);
+  return Module.bindAccount(account);
 }
 /*
  * 解绑账户
  */
 export function unbindAccount(): Promise<PushResult> {
-  return AliyunPush.unbindAccount();
+  return Module.unbindAccount();
 }
 /*
  * 添加别名
  */
 export function addAlias(alias: string): Promise<PushResult> {
-  return AliyunPush.addAlias(alias);
+  return Module.addAlias(alias);
 }
 
 /*
  * 删除别名
  */
 export function removeAlias(alias: string): Promise<PushResult> {
-  return AliyunPush.removeAlias(alias);
+  return Module.removeAlias(alias);
 }
 
 /*
  * 查询绑定别名
  */
 export function listAlias(): Promise<PushResult> {
-  return AliyunPush.listAlias();
+  return Module.listAlias();
 }
 
 /*
@@ -171,7 +149,7 @@ export function bindTag(
   target = kAliyunTargetDevice,
   alias?: string
 ): Promise<PushResult> {
-  return AliyunPush.bindTag(tags, target, alias);
+  return Module.bindTag(tags, target, alias);
 }
 
 /*
@@ -182,101 +160,96 @@ export function unbindTag(
   target = kAliyunTargetDevice,
   alias?: string
 ): Promise<PushResult> {
-  return AliyunPush.unbindTag(tags, target, alias);
+  return Module.unbindTag(tags, target, alias);
 }
 
 /*
  * 移除标签
  */
 export function listTags(target = kAliyunTargetDevice): Promise<PushResult> {
-  return AliyunPush.listTags(target);
+  return Module.listTags(target);
 }
 
 /*
  * 绑定手机号码
  */
 export function bindPhoneNumber(phone: string): Promise<PushResult> {
-  if (Platform.OS === 'ios') {
+  if (Platform.OS !== 'android') {
     let result = {
       code: kAliyunPushOnlyAndroid,
       errorMsg: 'Only Support Android',
     };
-    const promise = new Promise<PushResult>((resolve, _) => {
+    return new Promise<PushResult>((resolve, _) => {
       resolve(result);
     });
-    return promise;
   }
-  return AliyunPush.bindPhoneNumber(phone);
+  return Module.bindPhoneNumber(phone);
 }
 
 /*
  * 解绑手机号码
  */
 export function unbindPhoneNumber(): Promise<PushResult> {
-  if (Platform.OS === 'ios') {
+  if (Platform.OS !== 'android') {
     let result = {
       code: kAliyunPushOnlyAndroid,
       errorMsg: 'Only Support Android',
     };
-    const promise = new Promise<PushResult>((resolve, _) => {
+    return new Promise<PushResult>((resolve, _) => {
       resolve(result);
     });
-    return promise;
   }
-  return AliyunPush.unbindPhoneNumber();
+  return Module.unbindPhoneNumber();
 }
 
 /*
  * 设置通知分组展示，只针对android
  */
 export function setNotificationInGroup(inGroup: boolean): Promise<PushResult> {
-  if (Platform.OS === 'ios') {
+  if (Platform.OS !== 'android') {
     let result = {
       code: kAliyunPushOnlyAndroid,
       errorMsg: 'Only Support Android',
     };
-    const promise = new Promise<PushResult>((resolve, _) => {
+    return new Promise<PushResult>((resolve, _) => {
       resolve(result);
     });
-    return promise;
   }
-  return AliyunPush.setNotificationInGroup(inGroup);
+  return Module.setNotificationInGroup(inGroup);
 }
 
 /*
  * 清楚所有通知
  */
 export function clearAndroidNotifications(): Promise<PushResult> {
-  if (Platform.OS === 'ios') {
+  if (Platform.OS !== 'android') {
     let result = {
       code: kAliyunPushOnlyAndroid,
       errorMsg: 'Only Support Android',
     };
-    const promise = new Promise<PushResult>((resolve, _) => {
+    return new Promise<PushResult>((resolve, _) => {
       resolve(result);
     });
-    return promise;
   }
 
-  return AliyunPush.clearNotifications();
+  return Module.clearNotifications();
 }
 
 /*
  * 创建Android平台的NotificationChannel
  */
 export function createAndroidChannel(params: any): Promise<PushResult> {
-  if (Platform.OS === 'ios') {
+  if (Platform.OS !== 'android') {
     let result = {
       code: kAliyunPushOnlyAndroid,
       errorMsg: 'Only Support Android',
     };
-    const promise = new Promise<PushResult>((resolve, _) => {
+    return new Promise<PushResult>((resolve, _) => {
       resolve(result);
     });
-    return promise;
   }
 
-  return AliyunPush.createChannel(params);
+  return Module.createChannel(params);
 }
 
 /*
@@ -287,41 +260,40 @@ export function createAndroidChannelGroup(
   name: string,
   desc: string
 ): Promise<PushResult> {
-  if (Platform.OS === 'ios') {
+  if (Platform.OS !== 'android') {
     let result = {
       code: kAliyunPushOnlyAndroid,
       errorMsg: 'Only Support Android',
     };
-    const promise = new Promise<PushResult>((resolve, _) => {
+    return new Promise<PushResult>((resolve, _) => {
       resolve(result);
     });
-    return promise;
   }
 
-  return AliyunPush.createChannelGroup(id, name, desc);
+  return Module.createChannelGroup(id, name, desc);
 }
 
 /*
  * 创建通知通道的分组
  */
 export function isAndroidNotificationEnabled(id?: string): Promise<boolean> {
-  if (Platform.OS === 'ios') {
+  if (Platform.OS !== 'android') {
     return new Promise((resolve, _) => {
       resolve(false);
     });
   }
 
-  return AliyunPush.isNotificationEnabled(id);
+  return Module.isNotificationEnabled(id);
 }
 
 /*
  * 跳转到通知设置页面
  */
 export function jumpToAndroidNotificationSettings(id?: string) {
-  if (Platform.OS === 'ios') {
+  if (Platform.OS !== 'android') {
     return;
   }
-  AliyunPush.jumpToNotificationSettings(id);
+  Module.jumpToNotificationSettings(id);
 }
 
 /*
@@ -338,7 +310,7 @@ export function turnOnIOSDebug(): Promise<PushResult> {
     });
   }
 
-  return AliyunPush.turnOnDebug();
+  return Module.turnOnDebug();
 }
 
 export function setIOSBadgeNum(num: number): Promise<PushResult> {
@@ -352,7 +324,7 @@ export function setIOSBadgeNum(num: number): Promise<PushResult> {
     });
   }
 
-  return AliyunPush.setBadgeNum(num);
+  return Module.setBadgeNum(num);
 }
 
 export function syncIOSBadgeNum(num: number): Promise<PushResult> {
@@ -366,7 +338,7 @@ export function syncIOSBadgeNum(num: number): Promise<PushResult> {
     });
   }
 
-  return AliyunPush.syncBadgeNum(num);
+  return Module.syncBadgeNum(num);
 }
 
 export function getApnsDeviceToken(): Promise<string> {
@@ -376,7 +348,7 @@ export function getApnsDeviceToken(): Promise<string> {
     });
   }
 
-  return AliyunPush.getApnsDeviceToken();
+  return Module.getApnsDeviceToken();
 }
 
 export function isIOSChannelOpened(): Promise<boolean> {
@@ -386,7 +358,7 @@ export function isIOSChannelOpened(): Promise<boolean> {
     });
   }
 
-  return AliyunPush.isChannelOpened();
+  return Module.isChannelOpened();
 }
 
 export function showNoticeWhenForeground(
@@ -402,11 +374,11 @@ export function showNoticeWhenForeground(
     });
   }
 
-  return AliyunPush.showNoticeWhenForeground(enabled);
+  return Module.showNoticeWhenForeground(enabled);
 }
 
 export function setPluginLogEnabled(enabled: boolean): void {
-  AliyunPush.setPluginLogEnabled(enabled);
+  Module.setPluginLogEnabled(enabled);
 }
 
 export type PushCallback = (event: any) => void;
@@ -455,10 +427,8 @@ let _onRegisterDeviceTokenFailedListener: EmitterSubscription | null;
  */
 let _onChannelOpenedListener: EmitterSubscription | null;
 
-const pushManagerEmitter = new NativeEventEmitter(AliyunPush);
-
 export function addNotificationCallback(callback: PushCallback) {
-  _onNotificationListener = pushManagerEmitter.addListener(
+  _onNotificationListener = ModuleEventEmitter.addListener(
     'AliyunPush_onNotification',
     (event) => {
       callback(event);
@@ -476,7 +446,7 @@ export function addNotificationReceivedInApp(callback: PushCallback) {
 }
 
 export function addMessageCallback(callback: PushCallback) {
-  _onMessageListener = pushManagerEmitter.addListener(
+  _onMessageListener = ModuleEventEmitter.addListener(
     'AliyunPush_onMessage',
     (event) => {
       callback(event);
@@ -485,7 +455,7 @@ export function addMessageCallback(callback: PushCallback) {
 }
 
 export function addNotificationOpenedCallback(callback: PushCallback) {
-  _onNotificationOpenedListener = pushManagerEmitter.addListener(
+  _onNotificationOpenedListener = ModuleEventEmitter.addListener(
     'AliyunPush_onNotificationOpened',
     (event) => {
       callback(event);
@@ -494,7 +464,7 @@ export function addNotificationOpenedCallback(callback: PushCallback) {
 }
 
 export function addNotificationRemovedCallback(callback: PushCallback) {
-  _onNotificationRemovedListener = pushManagerEmitter.addListener(
+  _onNotificationRemovedListener = ModuleEventEmitter.addListener(
     'AliyunPush_onNotificationRemoved',
     (event) => {
       callback(event);
@@ -512,7 +482,7 @@ export function addNotificationClickedWithNoAction(callback: PushCallback) {
 }
 
 export function addChannelOpenCallback(callback: PushCallback) {
-  _onChannelOpenedListener = pushManagerEmitter.addListener(
+  _onChannelOpenedListener = ModuleEventEmitter.addListener(
     'AliyunPush_onChannelOpened',
     (event) => {
       callback(event);
@@ -521,7 +491,7 @@ export function addChannelOpenCallback(callback: PushCallback) {
 }
 
 export function addRegisterDeviceTokenSuccessCallback(callback: PushCallback) {
-  _onRegisterDeviceTokenSuccessListener = pushManagerEmitter.addListener(
+  _onRegisterDeviceTokenSuccessListener = ModuleEventEmitter.addListener(
     'AliyunPush_onRegisterDeviceTokenSuccess',
     (event) => {
       callback(event);
@@ -530,7 +500,7 @@ export function addRegisterDeviceTokenSuccessCallback(callback: PushCallback) {
 }
 
 export function addRegisterDeviceTokenFailedCallback(callback: PushCallback) {
-  _onRegisterDeviceTokenFailedListener = pushManagerEmitter.addListener(
+  _onRegisterDeviceTokenFailedListener = ModuleEventEmitter.addListener(
     'AliyunPush_onRegisterDeviceTokenFailed',
     (event) => {
       callback(event);

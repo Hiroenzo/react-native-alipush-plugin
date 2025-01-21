@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "aliyun-react-native-push": ["./src/index"]
+      "react-native-alipush": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

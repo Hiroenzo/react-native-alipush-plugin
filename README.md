@@ -1,4 +1,4 @@
-# aliyun-react-native-push
+# react-native-alipush
 
 阿里云移动推送官方ReactNative插件
 
@@ -26,7 +26,7 @@ iOS
 ## 二、安装
 
 ```sh
-npm install aliyun-react-native-push
+npm install react-native-alipush
 ```
 
 ## 三、配置
@@ -42,9 +42,9 @@ npm install aliyun-react-native-push
 ```xml
 <application android:name="*****">
     <!-- 请填写你自己的- appKey -->
-    <meta-data android:name="com.alibaba.app.appkey" android:value="*****"/> 
+    <meta-data android:name="com.alibaba.app.appkey" android:value="*****"/>
     <!-- 请填写你自己的appSecret -->
-    <meta-data android:name="com.alibaba.app.appsecret" android:value="****"/> 
+    <meta-data android:name="com.alibaba.app.appsecret" android:value="****"/>
 </application>
 ```
 
@@ -186,7 +186,7 @@ iOS原生项目的AppDelegate.mm文件中需要引入通知回调系统方法
   // You can add your custom initial props in the dictionary below.
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
-  
+
   UNUserNotificationCenter *center =
         [UNUserNotificationCenter currentNotificationCenter];
     center.delegate = self;
@@ -532,7 +532,7 @@ AliyunPush.bindAccount(account).then(result => {
 
 | 参数名 | 类型 | 是否必须 | 含义 |
 | --- | --- | ---| --- |
-| alias | String | 必须参数 | 要添加的别名 |  
+| alias | String | 必须参数 | 要添加的别名 |
 
 返回值：
 
@@ -568,7 +568,7 @@ AliyunPush.addAlias(aliasAdded).then(result => {
 
 | 参数名 | 类型 | 是否必须 | 含义 |
 | --- | --- | ---| --- |
-| alias | String | 必须参数 | 要移除的别名 |  
+| alias | String | 必须参数 | 要移除的别名 |
 
 返回值：
 
@@ -633,7 +633,7 @@ AliyunPush.listAlias().then(result => {
 `function bindTag(tags: string[], target = kAliyunTargetDevice, alias?: string): Promise<PushResult>`
 
 添加标签
-  
+
 参数:
 
 | 参数名 | 类型 | 是否必须 | 含义 |
@@ -730,7 +730,7 @@ AliyunPush.unbindTag(tags, AliyunPush.kAliyunTargetDevice).then(result => {
 AliyunPush.listTags(AliyunPush.kAliyunTargetDevice).then(result => {
     let code = result.code;
     if (code === AliyunPush.kAliyunPushSuccessCode) {
-        let tagList = result.tagList;
+        let tagList = result.tagsList;
         if (tagList !== null && tagList !== undefined) {
             Alert.alert(`查询设备标签列表结果为: ${tagList}`);
         }
