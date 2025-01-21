@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
-import * as AliyunPush from 'react-native-alipush';
+import * as AliyunPush from 'react-native-alipush-plugin';
 
 const AndroidPage = () => {
   const [open, setOpen] = React.useState(false);

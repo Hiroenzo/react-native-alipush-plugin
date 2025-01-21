@@ -2,7 +2,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "react-native-alipush": ["./src/index"]
+      "react-native-alipush-plugin": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

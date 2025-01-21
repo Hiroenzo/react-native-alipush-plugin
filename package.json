@@ -1,5 +1,5 @@
 {
-  "name": "react-native-alipush",
+  "name": "react-native-alipush-plugin",
   "version": "0.9.0",
   "description": "test",
   "main": "lib/commonjs/index",
@@ -43,13 +43,13 @@
     "alicloud",
     "push"
   ],
-  "repository": "https://github.com/hiroenzo/react-native-alipush",
+  "repository": "https://github.com/hiroenzo/react-native-alipush-plugin",
   "author": "Hiroenzo",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hiroenzo/react-native-alipush/issues"
+    "url": "https://github.com/hiroenzo/react-native-alipush-plugin/issues"
   },
-  "homepage": "https://github.com/hiroenzo/react-native-alipush#readme",
+  "homepage": "https://github.com/hiroenzo/react-native-alipush-plugin#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/",
     "access": "public"

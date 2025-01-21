@@ -1,4 +1,4 @@
-# react-native-alipush
+# react-native-alipush-plugin
 
 阿里云移动推送官方ReactNative插件
 
@@ -26,7 +26,7 @@ iOS
 ## 二、安装
 
 ```sh
-npm install react-native-alipush
+npm install react-native-alipush-plugin
 ```
 
 ## 三、配置

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Platform, Text } from 'react-native';
 
 import { StyleSheet, SafeAreaView, View, Button, Alert } from 'react-native';
-import * as AliyunPush from 'react-native-alipush';
+import * as AliyunPush from 'react-native-alipush-plugin';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';

@@ -53,9 +53,9 @@ Remember to add tests for your change if possible. Run the unit tests by:
 yarn test
 ```
 
-To edit the Objective-C or Swift files, open `example/ios/AliyunReactNativePushExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-alipush`.
+To edit the Objective-C or Swift files, open `example/ios/AliyunReactNativePushExample.xcworkspace` in XCode and find the source files at `Pods > Development Pods > react-native-alipush-plugin`.
 
-To edit the Java or Kotlin files, open `example/android` in Android studio and find the source files at `react-native-alipush` under `Android`.
+To edit the Java or Kotlin files, open `example/android` in Android studio and find the source files at `react-native-alipush-plugin` under `Android`.
 
 
 ### Commit message convention

@@ -2,7 +2,7 @@
 import * as React from 'react';
 import { StyleSheet, View, TextInput, Button, SafeAreaView, Text, Alert } from 'react-native';
 
-import * as AliyunPush from 'react-native-alipush';
+import * as AliyunPush from 'react-native-alipush-plugin';
 
 const IOSPage = () => {
 
