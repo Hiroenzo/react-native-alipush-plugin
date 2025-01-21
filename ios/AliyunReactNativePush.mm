@@ -482,8 +482,21 @@ RCT_EXPORT_METHOD(listTags:(double)target
 RCT_EXPORT_METHOD(setBadgeNum:(double)num
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    RCTSharedApplication().applicationIconBadgeNumber = num;
-    resolve(@{KEY_CODE: CODE_SUCCESS});
+    if (@available(iOS 16.0, *)) {
+        UNUserNotificationCenter *_notificationCenter = [UNUserNotificationCenter currentNotificationCenter];
+        [_notificationCenter setBadgeCount:num withCompletionHandler:^(NSError * _Nullable error) {
+            if (error == nil) {
+                resolve(@{KEY_CODE: CODE_SUCCESS});
+            } else {
+                resolve(@{KEY_CODE:CODE_FAILED, KEY_ERROR_MSG: error.localizedDescription});
+            }
+        }];
+    } else {
+        RCTExecuteOnMainQueue(^{
+            RCTSharedApplication().applicationIconBadgeNumber = num;
+            resolve(@{KEY_CODE: CODE_SUCCESS});
+        });
+    }
 }
 
 RCT_EXPORT_METHOD(syncBadgeNum:(double)num
