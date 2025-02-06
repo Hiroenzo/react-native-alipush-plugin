@@ -637,4 +637,14 @@ public class AliyunPushModule extends ReactContextBaseJavaModule {
 	public void setPluginLogEnabled(boolean enabled) {
 		AliyunPushLog.setLogEnabled(enabled);
 	}
+
+	@ReactMethod
+  	public void addListener(String eventName) {
+    	// 可以在这里添加事件监听逻辑
+  	}
+
+  	@ReactMethod
+  	public void removeListeners(double count) {
+    	// 可以在这里添加移除事件监听逻辑
+  	}
 }
