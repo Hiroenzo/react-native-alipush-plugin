@@ -144,7 +144,7 @@ RCT_EXPORT_MODULE()
     NSDictionary *userInfo = notification.userInfo[@"notification"];
     AliyunPushRemoteNotificationCallback completionHandler = notification.userInfo[@"completionHandler"];
 
-   //服务端中extras字段，key是自己定义的
+    //服务端中extras字段，key是自己定义的
     PushLogD(@"onNotification userInfo =%@", userInfo);
 
     [CloudPushSDK sendNotificationAck:userInfo];
@@ -161,7 +161,7 @@ RCT_EXPORT_MODULE()
     if(_showNoticeWhenForeground) {
         // 通知弹出，且带有声音、内容和角标
         if (completionHandler != nil) {
-            completionHandler(UNNotificationPresentationOptionSound | UNNotificationPresentationOptionList | UNNotificationPresentationOptionBanner | UNNotificationPresentationOptionBadge);
+            completionHandler(UNNotificationPresentationOptionSound | UNNotificationPresentationOptionAlert | UNNotificationPresentationOptionBadge);
         }
     } else {
         // 处理iOS 10通知，并上报通知打开回执
@@ -211,7 +211,6 @@ RCT_EXPORT_MODULE()
         }
     }];
 
-
     // 通知打开回执上报
     [CloudPushSDK sendNotificationAck:userInfo];
     PushLogD(@"onNotification userInfo = %@", userInfo);
@@ -220,10 +219,11 @@ RCT_EXPORT_MODULE()
 }
 
 
-RCT_EXPORT_METHOD(initPush:(NSString*)appKey
-                  appSecret:(NSString*)appSecret
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(initPush,
+                 initPushWithAppKey:(NSString*)appKey
+                 initPushWithAppSecret:(NSString*)appSecret
+                 withResolver:(RCTPromiseResolveBlock)resolve
+                 withRejecter:(RCTPromiseRejectBlock)reject) {
     if (!appKey || !appKey.length) {
         resolve(@{KEY_CODE: CODE_PARAMS_ILLEGAL, @"errorMsg": @"appKey config error"});
         return;
@@ -233,7 +233,6 @@ RCT_EXPORT_METHOD(initPush:(NSString*)appKey
         resolve(@{KEY_CODE: CODE_PARAMS_ILLEGAL, @"errorMsg": @"appSecret config error"});
         return;
     }
-
 
     [self registerAPNS];
 
@@ -335,26 +334,31 @@ RCT_EXPORT_METHOD(initPush:(NSString*)appKey
     [self sendEventWithName:@"AliyunPush_onMessage" body:dic];
 }
 
-RCT_EXPORT_METHOD(closeCCPChannel:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(closeCCPChannel,
+                 closeCCPWithResolver:(RCTPromiseResolveBlock)resolve
+                 closeCCPWithRejecter:(RCTPromiseRejectBlock)reject){
     [CloudPushSDK closeCCPChannel];
     resolve(@{KEY_CODE: CODE_SUCCESS});
 }
 
-RCT_EXPORT_METHOD(getDeviceId:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getDeviceId,
+                 getDeviceIdWithResolver:(RCTPromiseResolveBlock)resolve
+                 getDeviceIdWithRejecter:(RCTPromiseRejectBlock)reject)
+{
     resolve([CloudPushSDK getDeviceId]);
 }
 
-RCT_EXPORT_METHOD(turnOnDebug:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(turnOnDebug,
+                 turnOnDebugWithResolver:(RCTPromiseResolveBlock)resolve
+                 turnOnDebugWithRejecter:(RCTPromiseRejectBlock)reject) {
     [CloudPushSDK turnOnDebug];
     resolve(@{KEY_CODE: CODE_SUCCESS});
 }
 
-RCT_EXPORT_METHOD(bindAccount:(NSString *)account
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(bindAccount,
+                 bindAccountWithAccount:(NSString *)account
+                 bindAccountWithResolver:(RCTPromiseResolveBlock)resolve
+                 bindAccountWithRejecter:(RCTPromiseRejectBlock)reject) {
     if (account) {
         [CloudPushSDK bindAccount:account withCallback:^(CloudPushCallbackResult *res) {
             if (res.success) {
@@ -368,8 +372,9 @@ RCT_EXPORT_METHOD(bindAccount:(NSString *)account
     }
 }
 
-RCT_EXPORT_METHOD(unbindAccount:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(unbindAccount,
+                 unbindAccountWithResolver:(RCTPromiseResolveBlock)resolve
+                 unbindAccountWithRejecter:(RCTPromiseRejectBlock)reject) {
     [CloudPushSDK unbindAccount:^(CloudPushCallbackResult *res) {
         if (res.success) {
             resolve(@{KEY_CODE:CODE_SUCCESS});
@@ -379,9 +384,10 @@ RCT_EXPORT_METHOD(unbindAccount:(RCTPromiseResolveBlock)resolve
     }];
 }
 
-RCT_EXPORT_METHOD(addAlias:(NSString *)alias
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(addAlias,
+                 addAliasWithAlias:(NSString *)alias
+                 addAliasWithResolver:(RCTPromiseResolveBlock)resolve
+                 addAliasWithRejecter:(RCTPromiseRejectBlock)reject) {
     if (alias) {
         [CloudPushSDK addAlias:alias withCallback:^(CloudPushCallbackResult *res) {
             if (res.success) {
@@ -395,9 +401,10 @@ RCT_EXPORT_METHOD(addAlias:(NSString *)alias
     }
 }
 
-RCT_EXPORT_METHOD(removeAlias:(NSString *)alias
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(removeAlias,
+                 removeAliasWithAlias:(NSString *)alias
+                 removeAliasWithResolver:(RCTPromiseResolveBlock)resolve
+                 removeAliasWithRejecter:(RCTPromiseRejectBlock)reject) {
     if (alias) {
         [CloudPushSDK removeAlias:alias withCallback:^(CloudPushCallbackResult *res) {
             if (res.success) {
@@ -411,8 +418,9 @@ RCT_EXPORT_METHOD(removeAlias:(NSString *)alias
     }
 }
 
-RCT_EXPORT_METHOD(listAlias:(RCTPromiseResolveBlock)resolve
-                  listAliasWithRejecter:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(listAlias,
+                 listAliasWithResolver:(RCTPromiseResolveBlock)resolve
+                 listAliasWithRejecter:(RCTPromiseRejectBlock)reject) {
     [CloudPushSDK listAliases:^(CloudPushCallbackResult *res) {
         if (res.success) {
             resolve(@{KEY_CODE:CODE_SUCCESS, @"aliasList": res.data});
@@ -422,11 +430,13 @@ RCT_EXPORT_METHOD(listAlias:(RCTPromiseResolveBlock)resolve
     }];
 }
 
-RCT_EXPORT_METHOD(bindTag:(NSArray *)tags
-                  target:(double)target
-                  alias:(NSString *)alias
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(bindTag,
+                 bindTagWithTags:(NSArray *)tags
+                 bindTagWithTarget:(int)target
+                 bindTagWithAlias:(NSString *)alias
+                 bindTagWithResolver:(RCTPromiseResolveBlock)resolve
+                 bindTagWithRejecter:(RCTPromiseRejectBlock)reject
+                 ) {
     if (tags && tags.count != 0) {
         if (target != 1 && target != 2 && target != 3) {
             target = 1;
@@ -443,11 +453,13 @@ RCT_EXPORT_METHOD(bindTag:(NSArray *)tags
     }
 }
 
-RCT_EXPORT_METHOD(unbindTag:(NSArray *)tags
-                  target:(double)target
-                  alias:(NSString *)alias
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(unbindTag,
+                 unbindTagWithTags:(NSArray *)tags
+                 unbindTagWithTarget:(int)target
+                 unbindTagWithAlias:(NSString *)alias
+                 unbindTagWithResolver:(RCTPromiseResolveBlock)resolve
+                 unbindTagWithRejecter:(RCTPromiseRejectBlock)reject
+                 ) {
     if (tags && tags.count != 0) {
         if (target != 1 && target != 2 && target != 3) {
             target = 1;
@@ -464,9 +476,11 @@ RCT_EXPORT_METHOD(unbindTag:(NSArray *)tags
     }
 }
 
-RCT_EXPORT_METHOD(listTags:(double)target
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(listTags,
+                 listTagsWithTarget:(int)target
+                 listTagsWithResolver:(RCTPromiseResolveBlock)resolve
+                 listTagsWithRejecter:(RCTPromiseRejectBlock)reject
+                 ) {
     if (target != 1 && target != 2 && target != 3) {
         target = 1;
     }
@@ -479,9 +493,10 @@ RCT_EXPORT_METHOD(listTags:(double)target
     }];
 }
 
-RCT_EXPORT_METHOD(setBadgeNum:(double)num
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(setBadgeNum,
+                 setBadgeNumWithNum:(int)num
+                 setBadgeNumWithResolver:(RCTPromiseResolveBlock)resolve
+                 setBadgeNumWithRejecter:(RCTPromiseRejectBlock)reject) {
     if (@available(iOS 16.0, *)) {
         UNUserNotificationCenter *_notificationCenter = [UNUserNotificationCenter currentNotificationCenter];
         [_notificationCenter setBadgeCount:num withCompletionHandler:^(NSError * _Nullable error) {
@@ -499,9 +514,10 @@ RCT_EXPORT_METHOD(setBadgeNum:(double)num
     }
 }
 
-RCT_EXPORT_METHOD(syncBadgeNum:(double)num
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(syncBadgeNum,
+                 syncBadgeNumWithNum:(int)num
+                 syncBadgeNumWithResolver:(RCTPromiseResolveBlock)resolve
+                 syncBadgeNumWithRejecter:(RCTPromiseRejectBlock)reject) {
     [CloudPushSDK syncBadgeNum:num withCallback:^(CloudPushCallbackResult *res) {
         if (res.success) {
             PushLogD(@"Sync badge num: [%lu] success.", (unsigned long)num);
@@ -513,19 +529,22 @@ RCT_EXPORT_METHOD(syncBadgeNum:(double)num
     }];
 }
 
-RCT_EXPORT_METHOD(showNoticeWhenForeground: (BOOL)enable
-                  resolve:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(showNoticeWhenForeground,
+                 showNoticeWhenForegroundWithEnabled: (BOOL)enable
+                 showNoticeWhenForegroundWithResolver:(RCTPromiseResolveBlock)resolve
+                 showNoticeWhenForegroundWithRejecter:(RCTPromiseRejectBlock)reject) {
     _showNoticeWhenForeground = enable;
     resolve(@{KEY_CODE:CODE_SUCCESS});
 }
 
-RCT_EXPORT_METHOD(getApnsDeviceToken:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(getApnsDeviceToken,
+                 getApnsDeviceTokenWithResolver:(RCTPromiseResolveBlock)resolve
+                 getApnsDeviceTokenWithRejecter:(RCTPromiseRejectBlock)reject) {
     resolve([CloudPushSDK getApnsDeviceToken]);
 }
 
-RCT_EXPORT_METHOD(setPluginLogEnabled:(BOOL)enabled) {
+RCT_REMAP_METHOD(setPluginLogEnabled,
+                 setPluginLogEnabledWithEnabled:(BOOL)enabled) {
     if (enabled) {
       [AliyunPushLog enableLog];
     }else {
@@ -533,8 +552,9 @@ RCT_EXPORT_METHOD(setPluginLogEnabled:(BOOL)enabled) {
     }
 }
 
-RCT_EXPORT_METHOD(isChannelOpened:(RCTPromiseResolveBlock)resolve
-                  reject:(RCTPromiseRejectBlock)reject) {
+RCT_REMAP_METHOD(isChannelOpened,
+                 isChannelOpenedWithResolver:(RCTPromiseResolveBlock)resolve
+                 isChannelOpenedWithRejecter:(RCTPromiseRejectBlock)reject) {
     resolve(@([CloudPushSDK isChannelOpened]));
 }
 

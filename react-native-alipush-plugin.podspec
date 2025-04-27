@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
 
   s.source_files = "ios/**/*.{h,m,mm}"
 
-  s.dependency 'AlicloudPush'
+  s.dependency 'AlicloudPush', '~> 2.0'
 
   if respond_to?(:install_modules_dependencies, true)
     install_modules_dependencies(s)
